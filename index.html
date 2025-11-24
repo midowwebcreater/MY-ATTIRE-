@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>MY ATTIRE — Premium Women's Fashion</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">MY <span>ATTIRE</span></div>
+    <nav class="nav">
+      <a href="#home">Home</a>
+      <a href="#collections">Collections</a>
+      <a href="#trending">Trending</a>
+      <a href="#cart" id="openCart">Cart (<span id="cartCount">0</span>)</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <!-- Myntra-like banner carousel -->
+    <section class="banner-wrap">
+      <div id="bannerCarousel" class="banner-carousel"></div>
+      <div id="bannerDots" class="banner-dots"></div>
+    </section>
+
+    <!-- categories row -->
+    <section class="categories container" id="collections">
+      <div class="cat">Daily Wear</div>
+      <div class="cat">Ethnic Wear</div>
+      <div class="cat">Bottoms</div>
+      <div class="cat">Designer Kurtis</div>
+      <div class="cat">Wedding Collection</div>
+      <div class="cat">Inners</div>
+    </section>
+
+    <!-- Featured / Trending -->
+    <section class="container section" id="trending">
+      <h2>Trending Now</h2>
+      <div id="trendingGrid" class="grid"></div>
+    </section>
+
+    <!-- New arrivals separate -->
+    <section class="container section">
+      <h2>New Arrivals</h2>
+      <div id="newGrid" class="grid"></div>
+    </section>
+
+    <!-- Offers -->
+    <section class="container section">
+      <h2>Offers & Banners</h2>
+      <div id="offersRow" class="offers-row"></div>
+    </section>
+
+    <!-- Order tracking / My Orders -->
+    <section class="container section">
+      <h2>Track Your Order</h2>
+      <div class="track-row">
+        <input id="trackPhone" placeholder="Enter phone (e.g. 919876543210)" />
+        <button id="trackBtn" class="btn">Check</button>
+      </div>
+      <div id="trackResults"></div>
+    </section>
+  </main>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal" style="display:none">
+    <div class="modal-card">
+      <h3>Your Cart</h3>
+      <div id="cartItems"></div>
+      <div class="cart-footer">
+        <div id="cartTotal">Total: ₹0</div>
+        <div>
+          <button id="checkoutBtn" class="btn">Checkout</button>
+          <button id="closeCart" class="btn ghost">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal" style="display:none">
+    <div class="modal-card">
+      <h3>Checkout</h3>
+      <div id="checkoutSummary"></div>
+      <label>Payment method</label>
+      <select id="paymentMethod">
+        <option value="cod">Cash On Delivery (COD)</option>
+        <option value="prepaid">Prepaid (Online / Bank)</option>
+      </select>
+
+      <div id="razorNote" class="muted">Prepaid will ask for payment proof after payment attempt.</div>
+
+      <input id="custName" placeholder="Full name" />
+      <input id="custPhone" placeholder="Phone with country code (e.g. 919876543210)" />
+      <textarea id="custAddress" placeholder="Shipping address"></textarea>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button id="placeOrder" class="btn">Place Order</button>
+        <button id="closeCheckout" class="btn ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment proof modal (prepaid bank transfer or post-razorpay) -->
+  <div id="proofModal" class="modal" style="display:none">
+    <div class="modal-card">
+      <h3>Upload Payment Proof (Screenshot / UTR)</h3>
+      <input id="utrInput" placeholder="Enter UTR / Transaction ID" />
+      <input id="proofFile" type="file" accept="image/*,video/*" />
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button id="submitProof" class="btn">Upload & Finish</button>
+        <button id="cancelProof" class="btn ghost">Cancel</button>
+      </div>
+      <div id="proofMsg" class="muted"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>WhatsApp Support: +917887474741 • Email: Myattiregoa@gmail.com</div>
+    <div>© MY ATTIRE</div>
+  </footer>
+
+  <!-- Supabase + App scripts -->
+  <script type="module" src="supabase-client.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
