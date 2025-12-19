@@ -1,129 +1,147 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>MY ATTIRE — Premium Women's Fashion</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My ATTIRE · Women’s Boutique</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --rose:#b76e79;
+      --soft:#f7e7ea;
+      --text:#1f1f1f;
+      --muted:#777;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,Arial,sans-serif;background:#fff;color:var(--text)
+    }
+    /* Header */
+    .topbar{
+      position:sticky;top:0;z-index:9;
+      background:#fff;border-bottom:1px solid #eee
+    }
+    .offer{
+      background:var(--soft);color:#7a3b44;
+      text-align:center;padding:8px 10px;font-weight:600
+    }
+    .brand{
+      display:flex;align-items:center;justify-content:center;
+      padding:14px;font-size:22px;font-weight:800;letter-spacing:.4px
+    }
+
+    /* Hero */
+    .hero{
+      padding:18px 16px;background:linear-gradient(135deg,#fff, var(--soft));
+      text-align:center
+    }
+    .hero h1{margin:6px 0 4px;font-size:22px}
+    .hero p{margin:0;color:var(--muted)}
+
+    /* Section */
+    .section{padding:14px 16px}
+    .section h3{margin:4px 0 12px}
+
+    /* Grid */
+    .grid{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:14px
+    }
+    .card{
+      border:1px solid #eee;border-radius:14px;overflow:hidden;
+      box-shadow:0 6px 14px rgba(0,0,0,.06)
+    }
+    .card img{
+      width:100%;height:220px;object-fit:cover;background:#f3f3f3
+    }
+    .card .info{padding:10px}
+    .price{color:var(--rose);font-weight:800}
+    .cta{
+      display:block;width:100%;margin-top:8px;
+      padding:10px;border-radius:22px;border:none;
+      background:var(--rose);color:#fff;font-weight:700
+    }
+
+    /* Footer */
+    footer{
+      padding:18px;text-align:center;color:#666;border-top:1px solid #eee
+    }
+
+    /* Floating WhatsApp */
+    .wa{
+      position:fixed;right:14px;bottom:16px;
+      background:#25D366;color:#fff;border-radius:28px;
+      padding:12px 16px;font-weight:700
+    }
+  </style>
 </head>
+
 <body>
 
-  <header class="topbar">
-    <div class="brand">MY <span>ATTIRE</span></div>
-    <nav class="nav">
-      <a href="#home">Home</a>
-      <a href="#collections">Collections</a>
-      <a href="#trending">Trending</a>
-      <a href="#cart" id="openCart">Cart (<span id="cartCount">0</span>)</a>
-    </nav>
-  </header>
+<div class="topbar">
+  <div class="offer">✨ Festival Sale · Flat Offers Live</div>
+  <div class="brand">My ATTIRE</div>
+</div>
 
-  <main id="home">
-    <!-- Myntra-like banner carousel -->
-    <section class="banner-wrap">
-      <div id="bannerCarousel" class="banner-carousel"></div>
-      <div id="bannerDots" class="banner-dots"></div>
-    </section>
+<div class="hero">
+  <h1>Premium Women’s Collection</h1>
+  <p>Soft luxury · Handpicked styles</p>
+</div>
 
-    <!-- categories row -->
-    <section class="categories container" id="collections">
-      <div class="cat">Daily Wear</div>
-      <div class="cat">Ethnic Wear</div>
-      <div class="cat">Bottoms</div>
-      <div class="cat">Designer Kurtis</div>
-      <div class="cat">Wedding Collection</div>
-      <div class="cat">Inners</div>
-    </section>
+<div class="section">
+  <h3>Premium Picks</h3>
+  <div class="grid" id="products"></div>
+</div>
 
-    <!-- Featured / Trending -->
-    <section class="container section" id="trending">
-      <h2>Trending Now</h2>
-      <div id="trendingGrid" class="grid"></div>
-    </section>
+<footer>
+  <div>Shipping: 4–5 days · Returns: 5 days</div>
+  <div style="margin-top:6px">
+    <a href="#" style="color:var(--rose)">Instagram</a>
+  </div>
+</footer>
 
-    <!-- New arrivals separate -->
-    <section class="container section">
-      <h2>New Arrivals</h2>
-      <div id="newGrid" class="grid"></div>
-    </section>
+<a class="wa" href="https://wa.me/917887474741" target="_blank">WhatsApp</a>
 
-    <!-- Offers -->
-    <section class="container section">
-      <h2>Offers & Banners</h2>
-      <div id="offersRow" class="offers-row"></div>
-    </section>
+<script>
+  const supabaseUrl = "https://svldensuerkwqcjncycq.supabase.co";
+  const supabaseKey = "YOUR_ANON_PUBLIC_KEY";
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    <!-- Order tracking / My Orders -->
-    <section class="container section">
-      <h2>Track Your Order</h2>
-      <div class="track-row">
-        <input id="trackPhone" placeholder="Enter phone (e.g. 919876543210)" />
-        <button id="trackBtn" class="btn">Check</button>
-      </div>
-      <div id="trackResults"></div>
-    </section>
-  </main>
+  async function loadProducts(){
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("status", true)
+      .order("created_at", { ascending:false });
 
-  <!-- Cart Modal -->
-  <div id="cartModal" class="modal" style="display:none">
-    <div class="modal-card">
-      <h3>Your Cart</h3>
-      <div id="cartItems"></div>
-      <div class="cart-footer">
-        <div id="cartTotal">Total: ₹0</div>
-        <div>
-          <button id="checkoutBtn" class="btn">Checkout</button>
-          <button id="closeCart" class="btn ghost">Close</button>
+    if(error){ console.error(error); return; }
+
+    const wrap = document.getElementById("products");
+    wrap.innerHTML = "";
+
+    data.forEach(p=>{
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <img src="https://via.placeholder.com/600x800?text=My+ATTIRE" />
+        <div class="info">
+          <div>${p.name}</div>
+          <div class="price">₹ ${p.price}</div>
+          <button class="cta" onclick="order('${p.name}',${p.price})">Buy on WhatsApp</button>
         </div>
-      </div>
-    </div>
-  </div>
+      `;
+      wrap.appendChild(el);
+    });
+  }
 
-  <!-- Checkout Modal -->
-  <div id="checkoutModal" class="modal" style="display:none">
-    <div class="modal-card">
-      <h3>Checkout</h3>
-      <div id="checkoutSummary"></div>
-      <label>Payment method</label>
-      <select id="paymentMethod">
-        <option value="cod">Cash On Delivery (COD)</option>
-        <option value="prepaid">Prepaid (Online / Bank)</option>
-      </select>
+  function order(name, price){
+    const msg = `Hello My ATTIRE, I want to buy:\n${name}\nPrice: ₹${price}`;
+    window.open(`https://wa.me/917887474741?text=${encodeURIComponent(msg)}`);
+  }
 
-      <div id="razorNote" class="muted">Prepaid will ask for payment proof after payment attempt.</div>
+  loadProducts();
+</script>
 
-      <input id="custName" placeholder="Full name" />
-      <input id="custPhone" placeholder="Phone with country code (e.g. 919876543210)" />
-      <textarea id="custAddress" placeholder="Shipping address"></textarea>
-
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button id="placeOrder" class="btn">Place Order</button>
-        <button id="closeCheckout" class="btn ghost">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Payment proof modal (prepaid bank transfer or post-razorpay) -->
-  <div id="proofModal" class="modal" style="display:none">
-    <div class="modal-card">
-      <h3>Upload Payment Proof (Screenshot / UTR)</h3>
-      <input id="utrInput" placeholder="Enter UTR / Transaction ID" />
-      <input id="proofFile" type="file" accept="image/*,video/*" />
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-        <button id="submitProof" class="btn">Upload & Finish</button>
-        <button id="cancelProof" class="btn ghost">Cancel</button>
-      </div>
-      <div id="proofMsg" class="muted"></div>
-    </div>
-  </div>
-
-  <footer class="footer">
-    <div>WhatsApp Support: +917887474741 • Email: Myattiregoa@gmail.com</div>
-    <div>© MY ATTIRE</div>
-  </footer>
-
-  <!-- Supabase + App scripts -->
-  <script type="module" src="supabase-client.js"></script>
-  <script type="module" src="script.js"></script>
 </body>
 </html>
